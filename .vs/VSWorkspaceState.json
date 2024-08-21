@@ -3,10 +3,10 @@
     "",
     "\\Controllers",
     "\\Data",
+    "\\Migrations",
     "\\Models",
     "\\obj",
     "\\Views"
   ],
-  "SelectedNode": "\\Controllers\\FlashcardController.cs",
   "PreviewInSolutionExplorer": false
 }

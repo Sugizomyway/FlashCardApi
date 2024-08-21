@@ -1,12 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using FlashCardApi.Data;
-using FlashCardApi.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using FlashCardApi.CoreServices.ServiceInterface;
+using FlashCardApi.Models;
+
 
 namespace FlashCardApi.Controllers
 {
@@ -15,24 +11,57 @@ namespace FlashCardApi.Controllers
     public class FlashcardController : ControllerBase
     {
         // Fields
-        private readonly IRepository _repo;
-        private readonly ILogger<FlashcardController> _logger;
+        private readonly IFlashCardService _FlashCardService;
+
         // Constructor
-        public FlashcardController(IRepository repo, ILogger<FlashcardController> logger)
+        public FlashcardController(IFlashCardService FlashCardService)
         {
-            this._repo = repo;
-            this._logger = logger;
+            _FlashCardService = FlashCardService;
         }
+
         // Http Methods
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<FlashCard>>> GetFlashCard(int id)
+        [HttpGet("GetAll")]
+        public async Task<ActionResult<IEnumerable<FlashCard>>> GetAllCards()
         {
-            FlashCard fcard;
+            var fc = await _FlashCardService.GetAllCards();
+            return Ok(fc);
+        }
+        [HttpGet("GetById")]
+        public async Task<ActionResult<FlashCard>> GetById(int id)
+        {
+            var fc = await _FlashCardService.GetCardById(id);
+            return Ok(fc);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeleteFlashCard(int id)
+        {
+            await _FlashCardService.DeleteCard(id);
+            return NoContent();
+        }
+
+        [HttpPost("addFlashCard")]
+        public async Task<ActionResult<FlashCard>> PostFlashCard(FlashCard flashcard)
+        {
+            var fc = await _FlashCardService.AddCard(flashcard);
+            return Ok(fc);
+        }
+
+        [HttpPut("UpdateFlashCard")]
+        public async Task<ActionResult> PutFlashCard([FromBody] FlashCard flashCard)
+        {
             try
             {
-                fcard = await _repo.Get
+                await _FlashCardService.UpdateCard(flashCard);
             }
+            catch (Exception e) 
+            {
+                return StatusCode(500);
+            }
+            
+            return NoContent();
         }
+
 
     }
 }
