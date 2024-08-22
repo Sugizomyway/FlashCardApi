@@ -5,7 +5,7 @@ namespace FlashCardApi.Models
 {
     public class FlashCard
     {
-        [JsonPropertyName("CId")]
+        [JsonPropertyName("Id")]
         [Key]
         public int Id{get;set;}
         [JsonPropertyName("Question")]
